@@ -84,6 +84,7 @@ int main(){
                 player.velocity.x -= acceleration;
 
             player.velocity.x *= 0.95f;
+            player.velocity.y += 0.005f;
             
             player.position.x += player.velocity.x;
             player.position.y += player.velocity.y;
@@ -107,6 +108,9 @@ int main(){
                         keyPressed['a'] = 0;
                     else
                         keyPressed['d'] = 1;
+                    break;
+                default:
+                    player.velocity.y = -0.25f;
                     break;
             }
         }
