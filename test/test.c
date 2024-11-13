@@ -56,6 +56,19 @@ void  Init() {
     DrawScreen();
 }
 
+int IntersectCourse(VEC2 _v) {
+    int x = (int) _v.x;
+    int y = (int) _v.y;
+    switch(course_1_1[y][x]) {
+        case 'b':
+        case 'p':
+        case 'q':
+            return 1;
+    }
+
+    return 0;
+}
+
 int main(){
     sprintf(aa[0], "x");
     sprintf(aa[' '], " ");
@@ -84,10 +97,20 @@ int main(){
                 player.velocity.x -= acceleration;
 
             player.velocity.x *= 0.95f;
-            player.velocity.y += 0.005f;
+            player.velocity.y += 0.005f;    // gravity
             
             player.position.x += player.velocity.x;
             player.position.y += player.velocity.y;
+
+            VEC2 down = {
+                player.position.x + 0.5f,
+                player.position.y + 1.0f
+            };
+
+            if(IntersectCourse(down)) {
+                player.position.y = floorf(player.position.y);
+                player.velocity.y = 0;
+            }
         }
 
         if (nowClock >= lastDrawClock + DRAW_INTERVAL) {
@@ -110,7 +133,7 @@ int main(){
                         keyPressed['d'] = 1;
                     break;
                 default:
-                    player.velocity.y = -0.25f;
+                    player.velocity.y = -0.15f; // jump power
                     break;
             }
         }
