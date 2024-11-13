@@ -7,4 +7,4 @@ all:
 	./testgame
 
 clean:
-
+	rm test.c testgame
