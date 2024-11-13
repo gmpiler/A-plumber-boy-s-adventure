@@ -19,6 +19,7 @@ typedef struct {
 typedef struct {
     VEC2 position;
     VEC2 velocity;
+    int jumping;
 } PLAYER;
 
 PLAYER player;
@@ -52,6 +53,9 @@ void DrawScreen()
 void  Init() {
     player.position.x = SCREEN_WIDTH/2;
     player.position.y = 13;
+    player.velocity.x = 0;
+    player.velocity.y = 0;
+    player.jumping = 0;
     memset(keyPressed, 0, sizeof(keyPressed));
     DrawScreen();
 }
@@ -102,14 +106,42 @@ int main(){
             player.position.x += player.velocity.x;
             player.position.y += player.velocity.y;
 
+            VEC2 left = {
+                player.position.x,
+                player.position.y + 0.5f
+            };
+            if(IntersectCourse(left)) {
+                player.position.x = floorf(player.position.x) + 1.0f;
+                player.velocity.x = 0;
+            }
+            VEC2 right = {
+                player.position.x + 1.0f,
+                player.position.y + 0.5f
+            };
+            if(IntersectCourse(right)) {
+                player.position.x = floorf(player.position.x);
+                player.velocity.x = 0;
+            }
+
+            VEC2 up = {
+                player.position.x + 0.5f,
+                player.position.y
+            };
+            if(IntersectCourse(up)) {
+                player.position.y = floorf(player.position.y) + 1.0f;
+                player.velocity.y = 0;
+            }
+
             VEC2 down = {
                 player.position.x + 0.5f,
                 player.position.y + 1.0f
             };
-
             if(IntersectCourse(down)) {
                 player.position.y = floorf(player.position.y);
                 player.velocity.y = 0;
+                player.jumping = 0;
+            }else{
+                player.jumping = 1;
             }
         }
 
@@ -133,7 +165,7 @@ int main(){
                         keyPressed['d'] = 1;
                     break;
                 default:
-                    player.velocity.y = -0.15f; // jump power
+                    if(!player.jumping) player.velocity.y = -0.15f; // jump power
                     break;
             }
         }
